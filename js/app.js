@@ -1,76 +1,71 @@
-const list = JSON.parse(localStorage.getItem('todos')) || [];
+const list = JSON.parse(localStorage.getItem('todo')) || [];
 const vm = new Vue({
 	el: '.todoapp',
 	data: {
-		list:list,
-		things: '',
+		list,
+		currentTemp: '',
 		currentId: '',
-		currentThing: ''
+		currentThing:''
+
 	},
 	methods: {
 		del(id) {
-			console.log(this.list);
-			let idx = this.list.findIndex(item => item.id === id);
-			this.list.splice(idx, 1);
-			// this.list = this.list.filter(v => v.id !== id );
+			this.list = this.list.filter(item => item.id !== id);
 		},
 		add() {
-			if (!this.things.trim()) {
-				alert('输入内容不能为空!');
+			if (!this.currentTemp.trim() ){
+				alert('输入内容不能为空');
 				return;
 			}
-			// console.log(this.things);
 			let temp = {
 				id: +new Date(),
-				thing: this.things,
+				thing: this.currentTemp,
 				done: false
-			}
+			};
 			this.list.unshift(temp);
-			this.things = '';
+			// console.log(this.list);
+			this.currentTemp = '';
 		},
-		showEdit(id, thing) {
+		edit(id,thing) {
 			this.currentId = id;
 			this.currentThing = thing;
 		},
-		edit() {
-			const todo = this.list.find(item => item.id === this.currentId);
-			if (!todo.thing.trim()) {
+		editUp() {
+			const todo = this.list.filter(item => item.id === this.currentId);
+			if(!todo[0].thing.trim()){
 				this.list = this.list.filter(item => item.id !== this.currentId);
 			}
-			this.currentId = '';
+			this.currentId = ''
 		},
 		cancel(item) {
+			item.thing = this.currentThing;
 			this.currentId = '';
-			console.log(item);
-			item.thing = this.currentThing
 		},
 		clear() {
 			this.list = this.list.filter(item => !item.done);
 		}
 	},
 	computed: {
-		isShow() {
-			return this.list.some(item => item.done);
-		},
-		leftCount() {
-			return this.list.filter(item => !item.done).length;
-		},
-		isCheckAll: {
-			get() {
-				return this.list.every(item => item.done);
+			leftCount() {
+				return this.list.filter(item => !item.done).length;
 			},
-			set(value) {
-				console.log(value);
-				this.list.forEach(item => item.done = value);
+			isClear() {
+				return this.list.some(item => item.done);
+			},
+			isCheckAll: {
+				get() {
+					return this.list.every(item => item.done);
+				},
+				set(value){
+					this.list.forEach(item => item.done = value);
+				}
 			}
-		}
 	},
 	watch: {
 		list: {
 			deep:true,
 			handler(value) {
-				// console.log(value);
-				localStorage.setItem('todos',JSON.stringify(value));
+				localStorage.setItem('todo',JSON.stringify(value));
 			}
 		}
 	}
