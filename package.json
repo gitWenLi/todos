@@ -9,6 +9,7 @@
     "todomvc-common": "^1.0.0",
     "vue": "^2.6.10",
     "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10",
     "webpack-dev-server": "^3.9.0"
   }
 }
